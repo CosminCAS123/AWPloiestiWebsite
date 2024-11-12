@@ -1,0 +1,58 @@
+﻿@page "/ConfigureTournament"
+@using AWPloiesti.Models
+
+<!-- Participant Registration EditForm -->
+<!-- Participant Registration EditForm -->
+<EditForm Model="@participantModel" OnValidSubmit="RegisterParticipant">
+    <DataAnnotationsValidator />
+
+    
+
+    <div class="form-container">
+        <div class="mt-4">
+            <label for="participantName" class="form-label">Nume participant</label>
+            <InputText id="participantName" class="form-control" @bind-Value="participantModel.FullName" />
+            <ValidationMessage For="@(() => participantModel.FullName)" />
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Înregistrează participant</button>
+    </div>
+</EditForm>
+
+<!-- Tournament Creation EditForm -->
+<EditForm Model="@tournamentModel" OnValidSubmit="CreateTournament">
+    <DataAnnotationsValidator />
+
+    
+   
+    <div class="form-container">
+        <div class="mt-4">
+            <label for="tournamentName" class="form-label">Numele turneului</label>
+            <InputText id="tournamentName" class="form-control" @bind-Value="tournamentModel.TournamentName" />
+            <ValidationMessage For="@(() => tournamentModel.TournamentName)" />
+        </div>
+        <button type="submit" class="btn btn-success mt-2">Start turneu</button>
+    </div>
+</EditForm>
+@code {
+    private Tournament tournamentModel = new Tournament();
+    private Participant participantModel = new Participant();
+    private List<Participant> participants = new List<Participant>();
+    private void caca()
+    {
+        
+    }
+
+    private void RegisterParticipant()
+    { 
+        participants.Add(new Participant { FullName = participantModel.FullName , Wins = 0 , Losses = 0 }); 
+    }
+
+    private async Task CreateTournament()
+    {
+        // configure and add the tournament to the database
+        this.tournamentModel.Status = TournamentStatus.Started;
+        //assign each participant the tournament id
+         
+
+    }
+}

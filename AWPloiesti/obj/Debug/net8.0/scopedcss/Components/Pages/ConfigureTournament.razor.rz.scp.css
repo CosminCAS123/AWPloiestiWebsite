@@ -1,0 +1,54 @@
+/* Outer container to center forms vertically */
+.form-container:first-of-type[b-evkcv4ws5b] {
+    margin-top: 4rem; /* Adjust this value as needed */
+}
+
+/* Form Container Styling */
+.form-container[b-evkcv4ws5b] {
+    width: 33%;
+    margin: 1rem auto;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.validation-summary[b-evkcv4ws5b] {
+    color: red;
+    margin-bottom: 1rem;
+}
+
+    .validation-summary ul[b-evkcv4ws5b] {
+        padding-left: 1.25rem; /* Adds some indentation for list items */
+    }
+
+    .validation-summary li[b-evkcv4ws5b] {
+        list-style-type: disc;
+    }
+/* Additional styles for form elements */
+.form-label[b-evkcv4ws5b] {
+    font-weight: bold;
+    color: #333;
+}
+
+.form-control[b-evkcv4ws5b] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.btn-primary[b-evkcv4ws5b],
+.btn-success[b-evkcv4ws5b] {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    border-radius: 4px;
+}
+
+/* Additional spacing for separating the forms */
+.form-container + .form-container[b-evkcv4ws5b] {
+    margin-top: 1.5rem;
+}

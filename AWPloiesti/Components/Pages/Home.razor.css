@@ -1,0 +1,33 @@
+﻿.full-background {
+    
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column; /* Stack heading and button vertically */
+
+}
+
+.heading {
+    font-size: 3rem;
+    color: #FFD700; /* Soft yellow */
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.5); /* Slight dark background for contrast */
+    border-radius: 10px;
+    border: 3px solid #FFA500; /* Orange border for contrast */
+    background-color : blueviolet;
+    margin-bottom: 200px;
+}
+
+.flag-image {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 70px; /* Adjust width as needed */
+    height: auto;
+    border: 2px solid #FFFFFF; /* Optional white border for visibility */
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Shadow for depth */

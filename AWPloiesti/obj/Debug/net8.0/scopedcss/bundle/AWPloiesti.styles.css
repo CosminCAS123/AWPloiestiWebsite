@@ -1,0 +1,110 @@
+@import '_content/Blazor.Bootstrap/Blazor.Bootstrap.bundle.scp.css';
+
+/* _content/AWPloiesti/Components/Layout/MainLayout.razor.rz.scp.css */
+#blazor-error-ui[b-c9znu8k6xc] {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss[b-c9znu8k6xc] {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+/* _content/AWPloiesti/Components/Pages/ConfigureTournament.razor.rz.scp.css */
+/* Outer container to center forms vertically */
+.form-container:first-of-type[b-evkcv4ws5b] {
+    margin-top: 4rem; /* Adjust this value as needed */
+}
+
+/* Form Container Styling */
+.form-container[b-evkcv4ws5b] {
+    width: 33%;
+    margin: 1rem auto;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.validation-summary[b-evkcv4ws5b] {
+    color: red;
+    margin-bottom: 1rem;
+}
+
+    .validation-summary ul[b-evkcv4ws5b] {
+        padding-left: 1.25rem; /* Adds some indentation for list items */
+    }
+
+    .validation-summary li[b-evkcv4ws5b] {
+        list-style-type: disc;
+    }
+/* Additional styles for form elements */
+.form-label[b-evkcv4ws5b] {
+    font-weight: bold;
+    color: #333;
+}
+
+.form-control[b-evkcv4ws5b] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.btn-primary[b-evkcv4ws5b],
+.btn-success[b-evkcv4ws5b] {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    border-radius: 4px;
+}
+
+/* Additional spacing for separating the forms */
+.form-container + .form-container[b-evkcv4ws5b] {
+    margin-top: 1.5rem;
+}
+/* _content/AWPloiesti/Components/Pages/Home.razor.rz.scp.css */
+.full-background[b-i7fih6m84i] {
+    
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column; /* Stack heading and button vertically */
+
+}
+
+.heading[b-i7fih6m84i] {
+    font-size: 3rem;
+    color: #FFD700; /* Soft yellow */
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.5); /* Slight dark background for contrast */
+    border-radius: 10px;
+    border: 3px solid #FFA500; /* Orange border for contrast */
+    background-color : blueviolet;
+    margin-bottom: 200px;
+}
+
+.flag-image[b-i7fih6m84i] {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 70px; /* Adjust width as needed */
+    height: auto;
+    border: 2px solid #FFFFFF; /* Optional white border for visibility */
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Shadow for depth */

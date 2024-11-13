@@ -3,6 +3,7 @@
 @using AWPloiesti.Services
 @inject ITournamentService tournamentService
 @inject IUserService userService
+@inject NavigationManager navManager
 
 <!-- Participant Registration EditForm -->
 <!-- Participant Registration EditForm -->
@@ -54,11 +55,12 @@
 
 
     [Inject] protected PreloadService preloadService { get; set; } = default!;
-    
-    
+
+
     private void RegisterParticipant()
     { 
         participants.Add(new Participant { FullName = participantModel.FullName , Wins = 0 , Losses = 0 }); 
+
     }
 
     private async Task CreateTournament()
@@ -74,7 +76,7 @@
         this.preloadMessage = CREATING_TOURNAMENT;
         StateHasChanged();
         this.preloadService.Show(SpinnerColor.Info);
-        
+
         await Task.Delay(1000);
         await this.tournamentService.AddTournamentAsync(tournamentModel);
         this.preloadMessage = ADDING_PARTICIPANTS;
@@ -87,6 +89,7 @@
 
         await Task.Delay(2000);
         this.preloadService.Hide();
+        navManager.NavigateTo($"/turneu/{tournamentModel.TournamentID}");
 
 
     }

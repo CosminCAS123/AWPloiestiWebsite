@@ -1,0 +1,11 @@
+﻿@page "/tournament/{id:int}"
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load tournament data by Id, e.g.,
+        // var tournament = await TournamentService.GetTournamentByIdAsync(Id);
+    }
+}

@@ -14,5 +14,7 @@ namespace AWPloiesti.Models
 
         public TournamentStatus Status { get; set; } = TournamentStatus.NotStarted; 
 
+        public string CurrentStage { get; set; }
+
     }
 }

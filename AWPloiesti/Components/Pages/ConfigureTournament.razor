@@ -1,5 +1,8 @@
 ﻿@page "/ConfigureTournament"
 @using AWPloiesti.Models
+@using AWPloiesti.Services
+@inject ITournamentService tournamentService
+@inject IUserService userService
 
 <!-- Participant Registration EditForm -->
 <!-- Participant Registration EditForm -->
@@ -15,6 +18,10 @@
             <ValidationMessage For="@(() => participantModel.FullName)" />
         </div>
         <button type="submit" class="btn btn-primary mt-2">Înregistrează participant</button>
+        <!-- Display the number of participants -->
+        <div class="mt-3">
+            <label class="form-label">Număr participanți: @participants.Count</label>
+        </div>
     </div>
 </EditForm>
 
@@ -33,15 +40,22 @@
         <button type="submit" class="btn btn-success mt-2">Start turneu</button>
     </div>
 </EditForm>
+
+<Preload Class = "mt-3" LoadingText="@preloadMessage" ></Preload>
+
 @code {
     private Tournament tournamentModel = new Tournament();
     private Participant participantModel = new Participant();
     private List<Participant> participants = new List<Participant>();
-    private void caca()
-    {
-        
-    }
+    private string preloadMessage = string.Empty;
 
+    private const string ADDING_PARTICIPANTS = "Se adauga participantii...";
+    private const string CREATING_TOURNAMENT = "Se creeaza turneul...";
+
+
+    [Inject] protected PreloadService preloadService { get; set; } = default!;
+    
+    
     private void RegisterParticipant()
     { 
         participants.Add(new Participant { FullName = participantModel.FullName , Wins = 0 , Losses = 0 }); 
@@ -49,10 +63,31 @@
 
     private async Task CreateTournament()
     {
-        // configure and add the tournament to the database
+
         this.tournamentModel.Status = TournamentStatus.Started;
-        //assign each participant the tournament id
-         
+
+        //add tournament to tournaments table
+        //add users in the database
+        //assign each user the current tournament ID.
+
+        //start preload
+        this.preloadMessage = CREATING_TOURNAMENT;
+        StateHasChanged();
+        this.preloadService.Show(SpinnerColor.Info);
+        
+        await Task.Delay(1000);
+        await this.tournamentService.AddTournamentAsync(tournamentModel);
+        this.preloadMessage = ADDING_PARTICIPANTS;
+        StateHasChanged();
+
+        await Task.Delay(1000);
+        await this.userService.AddParticipantsAsync(this.participants, tournamentModel.TournamentID);
+        this.preloadMessage = "GATA!!!";
+        StateHasChanged();
+
+        await Task.Delay(2000);
+        this.preloadService.Hide();
+
 
     }
 }

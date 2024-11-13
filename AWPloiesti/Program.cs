@@ -1,5 +1,6 @@
 using AWPloiesti;
 using AWPloiesti.Components;
+using AWPloiesti.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,8 @@ builder.Services.AddRazorComponents()
 builder.Services.AddBlazorBootstrap();
 
 builder.Services.AddDbContext<AWDbContext>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITournamentService , TournamentService>();
 
 var app = builder.Build();
 

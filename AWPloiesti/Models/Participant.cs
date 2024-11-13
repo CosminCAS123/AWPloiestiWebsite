@@ -7,7 +7,7 @@ namespace AWPloiesti.Models
         [Key]
         public int ParticipantID { get; set; }
 
-        [Required(ErrorMessage = "Camp obligatoriu!")]
+        
         [RegularExpression(@"^[A-Za-z]+ [A-Za-z]+$", ErrorMessage = "Ambele nume sunt obligatorii.Doar litere.")]
         public string FullName { get; set; }
 

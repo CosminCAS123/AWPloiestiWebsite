@@ -1,5 +1,6 @@
 ﻿using AWPloiesti.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore;
 
 namespace AWPloiesti.Services
 {
@@ -22,6 +23,16 @@ namespace AWPloiesti.Services
             {
                 return new OperationResult { Message = "Eroare la crearea turneului" , Success = true };
             }
+        }
+
+        public Task<List<(string, string)>> GetAllMatchesForRound(int round)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Tournament> GetTournamentByIdAsync(int id)
+        {
+            return await this.dbContext.Tournaments.FirstAsync(u => u.TournamentID == id);
         }
     }
 }

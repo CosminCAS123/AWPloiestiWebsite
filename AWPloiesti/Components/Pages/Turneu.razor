@@ -1,11 +1,161 @@
-﻿@page "/tournament/{id:int}"
+﻿@page "/turneu/{id:int}"
+@using AWPloiesti.Services
+@using AWPloiesti.Models
+@inject ITournamentService tournamentService
+
+
+
+<div class="page-container">
+    <h1 class="stage-header">Stage: @tournament?.CurrentStage</h1>
+
+    <div class="match-section">
+        <!-- Current Match Display -->
+        <h2 class="current-match">
+             EMIL REGE VS COSMIN BOSS
+        </h2>
+
+        <!-- Next Match Preview -->
+        <h3 class="next-match-preview">
+            Next Match: EMIL REGE VS COSMIN BOSS
+        </h3>
+    </div>
+
+    <div class="winner-selection">
+        <!-- Disabled Button for Winner Display -->
+        <Button Color="ButtonColor.Success" Disabled="@disable_button" Class="winner-btn" TooltipTitle="Selecteaza castigator si mergi la urmatorul meci." TooltipPlacement="TooltipPlacement.Top">
+            @winner
+        </Button>
+
+        <!-- User Selection Buttons -->
+        <div class="participant-buttons">
+            <Button Color="ButtonColor.Primary" Class="participant-btn" @onclick = "SetWinnerFirst" >
+               Emil Big rege
+            </Button>
+            <Button Color="ButtonColor.Primary" Class="participant-btn" @onclick = "SetWinnerSecond">
+               Cosmin Big Boss
+            </Button>
+        </div>
+    </div>
+</div>
+
+
+
 @code {
     [Parameter]
     public int Id { get; set; }
 
+    private Tournament tournament;
+
+    private string winner = "Selecteaza castigatorul.";
+
+    private bool disable_button = true;
+    private void SetWinnerFirst()
+    {
+        this.winner = "Cosmin big boss";
+        this.disable_button = false;
+    }
+    private void SetWinnerSecond()
+    {
+        this.winner = "Emil big rege";
+        this.disable_button = false;
+    }
     protected override async Task OnInitializedAsync()
     {
-        // Load tournament data by Id, e.g.,
-        // var tournament = await TournamentService.GetTournamentByIdAsync(Id);
+        //get tournament by id 
+        //create matches for this stage.
+         tournament = await tournamentService.GetTournamentByIdAsync(this.Id);
+        tournament.CurrentStage = 1;
+        //IMPLEMENT LATER
+        //var all_matches_for_round = await tournamentService.GetAllMatchesForRound(tournament.CurrentStage);
+
     }
 }
+<style>
+    /* Styles for the tournament page */
+    /* Styles for the tournament page container */
+    .winner-selection {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 5rem;
+    }
+
+    .winner-btn {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #ffffff;
+        background-color: #28a745; /* Green for winner confirmation */
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 5px;
+        margin-bottom: 1rem;
+
+       
+    }
+
+    .participant-buttons {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .participant-btn {
+        font-size: 1rem;
+        color: #ffffff;
+        background-color: red; /* Primary blue color */
+        border: none;
+        font-weight:normal;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .participant-btn:hover {
+            background-color: red; /* Darker blue on hover */
+        }
+    .page-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start; /* Push content higher */
+        padding-top: 2rem;
+        min-height: 80vh;
+    }
+
+    /* Stage header with light color and white shadow */
+    .stage-header {
+        font-size: 3rem;
+        color: black; /* Light color for readability */
+        text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.8); /* White shadow */
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    /* Match section styling with dark blue background */
+    .match-section {
+        text-align: center;
+        background-color: #ad0e19; /* Dark blue with slight transparency */
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2); /* Subtle white shadow for elevation */
+        width: 95%; /* Increased width for more space */
+        max-width: 700px;
+    }
+
+    /* Current match text with bright yellow and white shadow */
+    .current-match {
+        font-size: 2.5rem;
+        color: white; /* Bright yellow for visibility */
+        text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8); /* White shadow */
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+
+    /* Next match preview with light color and white shadow */
+    .next-match-preview {
+        font-size: 1.5rem;
+        color: white; /* Light coral/beige for contrast */
+        text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7); /* White shadow */
+        margin-top: 0.5rem;
+    }
+
+</style>

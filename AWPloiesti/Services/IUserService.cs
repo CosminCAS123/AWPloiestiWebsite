@@ -6,7 +6,9 @@ namespace AWPloiesti.Services
     {
         Task<OperationResult> AddParticipantsAsync(List<Participant> participants , int tournamentID);
 
-      
+        Task<List<int>> GetParticipantsIdsAsync(int tournamentID);
+
+        Task<Participant> GetByIdAsync(int id);
 
 
     }

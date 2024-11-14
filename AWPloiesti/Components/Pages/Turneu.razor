@@ -63,8 +63,9 @@
     {
         //get tournament by id 
         //create matches for this stage.
-         tournament = await tournamentService.GetTournamentByIdAsync(this.Id);
+        tournament = await tournamentService.GetTournamentByIdAsync(this.Id);
         tournament.CurrentStage = 1;
+        this.tournamentService.SetCurrentTournamentID(Id);
         //IMPLEMENT LATER
         //var all_matches_for_round = await tournamentService.GetAllMatchesForRound(tournament.CurrentStage);
 

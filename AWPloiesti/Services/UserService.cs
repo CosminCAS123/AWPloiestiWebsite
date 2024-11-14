@@ -1,4 +1,5 @@
 ﻿using AWPloiesti.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AWPloiesti.Services
 {
@@ -24,6 +25,19 @@ namespace AWPloiesti.Services
             }
         }
 
-      
+        public async Task<Participant?> GetByIdAsync(int id)
+        {
+            return await this.dbContext.Participants.FirstOrDefaultAsync(u => u.ParticipantID == id);
+        }
+
+        public async Task<List<int>> GetParticipantsIdsAsync(int tournamentID)
+        {
+             var list = await dbContext.Participants.
+                Where(p => p.TournamentID == tournamentID).
+                Select(p => p.ParticipantID).ToListAsync();
+
+            return list;
+                
+        }
     }
 }

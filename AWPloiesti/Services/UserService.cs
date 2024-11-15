@@ -30,6 +30,28 @@ namespace AWPloiesti.Services
             return await this.dbContext.Participants.FirstOrDefaultAsync(u => u.ParticipantID == id);
         }
 
+        public async Task<List<int>> GetLosersAsync(int tournamentID)
+        {
+            return await this.dbContext.Participants.
+                Where(p => p.TournamentID == tournamentID && p.Losses == 1).
+                Select(p => p.ParticipantID).
+                ToListAsync();
+        }
+
+        public async Task RemoveParticipantByIdAsync(int id)
+        {
+
+            var to_remove = await GetByIdAsync(id);
+             this.dbContext.Participants.Remove(to_remove!);
+            this.dbContext.SaveChangesAsync();
+
+        }
+
+        public async Task<Participant?> GetParticipantByUsername(string username)
+        {
+            return await this.dbContext.Participants.FirstOrDefaultAsync(p => p.FullName == username);
+        }
+
         public async Task<List<int>> GetParticipantsIdsAsync(int tournamentID)
         {
              var list = await dbContext.Participants.
@@ -38,6 +60,26 @@ namespace AWPloiesti.Services
 
             return list;
                 
+        }
+
+        public async Task<List<int>> GetWinnersAsync(int tournamentID)
+        {
+            return await this.dbContext.Participants.
+                Where(p => p.TournamentID == tournamentID && p.Losses == 0).
+                Select(p => p.ParticipantID).
+                ToListAsync();
+        }
+
+        public Task AddWinAsync(Participant participant)
+        {
+            participant.Wins++;
+            this.dbContext.SaveChangesAsync();
+        }
+
+        public Task AddLossAsync(Participant participant)
+        {
+            participant.Losses++;
+            this.dbContext.SaveChangesAsync();
         }
     }
 }

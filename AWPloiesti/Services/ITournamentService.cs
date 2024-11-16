@@ -16,9 +16,11 @@ namespace AWPloiesti.Services
 
         Task AddStageAsync();
 
-        int GetCurrentStage(int id);
+        int GetCurrentStage();
 
         Task SetOwnTournamentAsync(int id);
+
+        int? GetCurrentTournamentID();
 
     }
 }

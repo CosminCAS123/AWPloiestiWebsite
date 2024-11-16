@@ -9,13 +9,15 @@ namespace AWPloiesti.Services
          private AWDbContext dbContext;
 
 
-        private  int current_tournament_id;
+        public static  int current_tournament_id;
 
         private int current_stage = 0;
 
         private readonly IUserService userService;
 
         private Tournament current_tournament;
+
+        
          public TournamentService(AWDbContext dbContext , IUserService service)
          {
             this.userService = service;
@@ -42,7 +44,7 @@ namespace AWPloiesti.Services
             if (stage == 1)
             {
                 //get all ID's from participants within this tournament 
-                 participantIds = await this.userService.GetParticipantsIdsAsync(current_tournament.TournamentID);
+               
 
                 var random = new Random();
                 // Shuffle the list
@@ -66,6 +68,16 @@ namespace AWPloiesti.Services
                     var second = await this.userService.GetByIdAsync(participantIds[i + 1]);
                     pairs.Add((first.FullName , second.FullName));
                 }
+
+                if (oddParticipant is not null)
+                {
+                    var participant = await this.userService.GetByIdAsync((int)oddParticipant);
+                    pairs.Add((participant.FullName , participant.FullName));
+                    
+                }
+                   
+
+                       
 
                 return pairs;
 
@@ -162,7 +174,7 @@ namespace AWPloiesti.Services
             await this.dbContext.SaveChangesAsync();
         }
 
-        public int GetCurrentStage(int id)
+        public int GetCurrentStage()
         {
             return this.current_tournament.CurrentStage;
         }
@@ -170,10 +182,12 @@ namespace AWPloiesti.Services
         public async Task SetOwnTournamentAsync(int id)
         {
             this.current_tournament = await GetTournamentByIdAsync(id);
+            current_tournament_id = this.current_tournament.TournamentID;
         }
 
-     
-
-       
+        public  int? GetCurrentTournamentID()
+        {
+            return current_tournament_id;
+        }
     }
 }

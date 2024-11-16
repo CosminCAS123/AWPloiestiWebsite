@@ -6,7 +6,12 @@ namespace AWPloiesti.Services
     public class UserService : IUserService
     {
         private AWDbContext dbContext;
-        public UserService(AWDbContext _dbcontext) => this.dbContext = _dbcontext;
+        
+        public UserService(AWDbContext _dbcontext)
+        {
+            this.dbContext = _dbcontext;
+         
+        }
         public async Task<OperationResult> AddParticipantsAsync(List<Participant> participants , int tournamentId)
         {
             try
@@ -49,7 +54,14 @@ namespace AWPloiesti.Services
 
         public async Task<Participant?> GetParticipantByUsername(string username)
         {
-            return await this.dbContext.Participants.FirstOrDefaultAsync(p => p.FullName == username);
+            int? currentTournamentId = TournamentService.current_tournament_id;
+            if (currentTournamentId == null)
+            {
+                throw new InvalidOperationException("Current tournament is not set.");
+            }
+
+            return await this.dbContext.Participants
+                .FirstOrDefaultAsync(p => p.FullName == username && p.TournamentID == currentTournamentId);
         }
 
         public async Task<List<int>> GetParticipantsIdsAsync(int tournamentID)
@@ -70,16 +82,16 @@ namespace AWPloiesti.Services
                 ToListAsync();
         }
 
-        public Task AddWinAsync(Participant participant)
+        public async Task AddWinAsync(Participant participant)
         {
             participant.Wins++;
-            this.dbContext.SaveChangesAsync();
+            await this.dbContext.SaveChangesAsync();
         }
 
-        public Task AddLossAsync(Participant participant)
+        public async Task AddLossAsync(Participant participant)
         {
             participant.Losses++;
-            this.dbContext.SaveChangesAsync();
+            await this.dbContext.SaveChangesAsync();
         }
     }
 }

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AWPloiesti")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2a06801b3d704c0b10db3f0cde1f6b0f127557ff")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+497ef12c2b0ba985733a898e3a8d9d0413c6928e")]
 [assembly: System.Reflection.AssemblyProductAttribute("AWPloiesti")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AWPloiesti")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

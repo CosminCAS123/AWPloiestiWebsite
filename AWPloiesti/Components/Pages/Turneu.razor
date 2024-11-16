@@ -6,8 +6,8 @@
 
 
 <div class="page-container">
-    <h1 class="stage-header">Stage: @tournament?.CurrentStage</h1>
-
+    <h1 class="stage-header">Stage: @tournamentService.GetCurrentStage()</h1>
+    <h4 style="color : yellow">@finalorsemifinal</h4>
     <div class="match-section">
         <!-- Current Match Display -->
         <h2 class="current-match">
@@ -48,7 +48,11 @@
 
     //private Tournament tournament;
     private const string StageOver = "?";
+    private const string FINAL = "FINAL";
+    private const string SEMIFINAL = "SEMIFINAL";
+    private const string SELECTWINNER = "SELECTEAZA CASTIGATORUL";
 
+    private string finalorsemifinal = string.Empty;
     private int current_round = 0;
 
     private string? player1 = null;
@@ -70,8 +74,9 @@
 
         var add_win_guy = await this.userService.GetParticipantByUsername(this.winner);
         var add_lose_guy = await this.userService.GetParticipantByUsername(this.loser);
+
         await this.userService.AddWinAsync(add_win_guy);
-        await this.userService.AddLossAsync(add_lose_guy);
+        if (!(add_win_guy == add_lose_guy)) await this.userService.AddLossAsync(add_lose_guy); // to avoid when D VS D 
 
         if (add_lose_guy.Losses > 1)
         {
@@ -87,8 +92,17 @@
         {
             await this.tournamentService.AddStageAsync();
 
-            //  this.all_matches_for_round = this.tournamentService.GetAllMatchesForStageAsync()
-
+            this.all_matches_for_round = await this.tournamentService.GetAllMatchesForStageAsync(tournamentService.GetCurrentStage());
+            if (all_matches_for_round.Count == 1) this.finalorsemifinal = FINAL;
+            else if (all_matches_for_round.Count == 2) this.finalorsemifinal = SEMIFINAL;
+            this.all_matches_for_round.Add((StageOver, StageOver));
+            this.current_round = 0;
+            this.player1 = all_matches_for_round[0].Item1;
+            this.player2 = all_matches_for_round[0].Item2;
+            this.next_round_player1 = all_matches_for_round[1].Item1;
+            this.next_round_player2 = all_matches_for_round[1].Item2;
+            this.winner = SELECTWINNER ;
+            return;
 
         }
 
@@ -100,6 +114,7 @@
             this.player2 = last_match.Item2;
             this.next_round_player1 = StageOver;
             this.next_round_player2 = StageOver;
+            this.winner = SELECTWINNER;
 
         }
         var current_match = GetMatch(this.current_round);
@@ -108,10 +123,12 @@
         this.player2 = current_match.Item2;
         this.next_round_player1 = next_match.Item1;
         this.next_round_player2 = next_match.Item2;
+
+        this.winner = SELECTWINNER;
     }
     private async Task SetWinnerFirst()
     {
-
+       
         this.winner = player1;
         this.loser = player2;
         this.disable_button = false;
@@ -137,7 +154,7 @@
        await this.tournamentService.AddStageAsync();
         
         //IMPLEMENT LATER
-        all_matches_for_round = await tournamentService.GetAllMatchesForStageAsync(tournamentService.GetCurrentStage(this.Id));
+        all_matches_for_round = await tournamentService.GetAllMatchesForStageAsync(tournamentService.GetCurrentStage());
         all_matches_for_round.Add((StageOver, StageOver));
         var first_match = GetMatch(this.current_round);
         var second_match = GetMatch(this.current_round + 1);

@@ -10,7 +10,7 @@ namespace AWPloiesti.Models
 
 
         [Required(ErrorMessage = "Camp obligatoriu!")]
-        [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Doar litere!")]
+      
         public string TournamentName { get; set; } = string.Empty;
 
         public TournamentStatus Status { get; set; } = TournamentStatus.NotStarted; 

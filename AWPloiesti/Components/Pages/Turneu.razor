@@ -1,0 +1,258 @@
+﻿@page "/turneu/{id:int}"
+@using AWPloiesti.Services
+@using AWPloiesti.Models
+@inject ITournamentService tournamentService
+@inject IUserService userService
+
+
+<div class="page-container">
+    <h1 class="stage-header">Stage: @tournamentService.GetCurrentStage()</h1>
+    <h4 style="color : yellow">@finalorsemifinal</h4>
+    <div class="match-section">
+        <!-- Current Match Display -->
+        <h2 class="current-match">
+             @(player1 + " vs " + player2)
+        </h2>
+
+        <!-- Next Match Preview -->
+        <h3 class="next-match-preview">
+            @(next_round_player1 + " vs " + next_round_player2)
+        </h3>
+    </div>
+
+    <div class="winner-selection">
+        <!-- Disabled Button for Winner Display -->
+        <Button Color="ButtonColor.Success" Disabled="@disable_button" 
+        Class="winner-btn" TooltipTitle="Selecteaza castigator si mergi la urmatorul meci." TooltipPlacement="TooltipPlacement.Top"
+        @onclick = "GoNextMatch">
+            @winner
+        </Button>
+
+        <!-- User Selection Buttons -->
+        <div class="participant-buttons">
+            <Button Color="ButtonColor.Primary" Class="participant-btn" @onclick = "SetWinnerFirst" >
+               @player1
+            </Button>
+            <Button Color="ButtonColor.Primary" Class="participant-btn" @onclick = "SetWinnerSecond">
+               @player2
+            </Button>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    //private Tournament tournament;
+    private const string StageOver = "?";
+    private const string FINAL = "FINAL";
+    private const string SEMIFINAL = "SEMIFINAL";
+    private const string SELECTWINNER = "SELECTEAZA CASTIGATORUL";
+
+    private string finalorsemifinal = string.Empty;
+    private int current_round = 0;
+
+    private string? player1 = null;
+    private string ?player2 = null;
+
+    List<(string, string)> all_matches_for_round = new List<(string, string)>();
+
+    private string? next_round_player1 = null;
+    private string? next_round_player2 = null;
+
+    private string winner = "Selecteaza castigatorul.";
+
+    private string loser = string.Empty;
+    private bool disable_button = true;
+
+    private async Task GoNextMatch()
+    {
+        //add win and add lose to previous guys
+
+        var add_win_guy = await this.userService.GetParticipantByUsername(this.winner);
+        var add_lose_guy = await this.userService.GetParticipantByUsername(this.loser);
+
+        await this.userService.AddWinAsync(add_win_guy);
+        if (!(add_win_guy == add_lose_guy)) await this.userService.AddLossAsync(add_lose_guy); // to avoid when D VS D 
+
+        if (add_lose_guy.Losses > 1)
+        {
+            //remove him from db
+            await this.userService.RemoveParticipantByIdAsync(add_lose_guy.ParticipantID);
+        }
+
+        //////
+        this.current_round++;
+        //GO NEXT STAGE
+
+        if (all_matches_for_round[this.current_round].Item1 == StageOver)
+        {
+            await this.tournamentService.AddStageAsync();
+
+            this.all_matches_for_round = await this.tournamentService.GetAllMatchesForStageAsync(tournamentService.GetCurrentStage());
+            if (all_matches_for_round.Count == 1) this.finalorsemifinal = FINAL;
+            else if (all_matches_for_round.Count == 2) this.finalorsemifinal = SEMIFINAL;
+            this.all_matches_for_round.Add((StageOver, StageOver));
+            this.current_round = 0;
+            this.player1 = all_matches_for_round[0].Item1;
+            this.player2 = all_matches_for_round[0].Item2;
+            this.next_round_player1 = all_matches_for_round[1].Item1;
+            this.next_round_player2 = all_matches_for_round[1].Item2;
+            this.winner = SELECTWINNER ;
+            return;
+
+        }
+
+        //LAST ROUND THIS STAGE
+        if (all_matches_for_round[this.current_round + 1].Item1 == StageOver)
+        {
+            var last_match = GetMatch(this.current_round);
+            this.player1 = last_match.Item1;
+            this.player2 = last_match.Item2;
+            this.next_round_player1 = StageOver;
+            this.next_round_player2 = StageOver;
+            this.winner = SELECTWINNER;
+
+        }
+        var current_match = GetMatch(this.current_round);
+        var next_match = GetMatch(this.current_round + 1);
+        this.player1 = current_match.Item1;
+        this.player2 = current_match.Item2;
+        this.next_round_player1 = next_match.Item1;
+        this.next_round_player2 = next_match.Item2;
+
+        this.winner = SELECTWINNER;
+    }
+    private async Task SetWinnerFirst()
+    {
+       
+        this.winner = player1;
+        this.loser = player2;
+        this.disable_button = false;
+    }
+    private async Task SetWinnerSecond()
+    {
+        var participant = await this.userService.GetParticipantByUsername(player2);
+        this.winner = player2;
+        this.loser = player1;
+        this.disable_button = false;
+    }
+
+    private (string , string) GetMatch(int round)
+    {
+        return all_matches_for_round[round];
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        //get tournament by id 
+        //create matches for this stage.
+        await this.tournamentService.SetOwnTournamentAsync(this.Id);
+     
+       await this.tournamentService.AddStageAsync();
+        
+        //IMPLEMENT LATER
+        all_matches_for_round = await tournamentService.GetAllMatchesForStageAsync(tournamentService.GetCurrentStage());
+        all_matches_for_round.Add((StageOver, StageOver));
+        var first_match = GetMatch(this.current_round);
+        var second_match = GetMatch(this.current_round + 1);
+
+        //get first and second match
+        this.player1 = first_match.Item1;
+        this.player2 = first_match.Item2;
+        this.next_round_player1 = second_match.Item1;
+        this.next_round_player2 = second_match.Item2;
+
+    }
+}
+<style>
+    /* Styles for the tournament page */
+    /* Styles for the tournament page container */
+    .winner-selection {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 5rem;
+    }
+
+    .winner-btn {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #ffffff;
+        background-color: #28a745; /* Green for winner confirmation */
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 5px;
+        margin-bottom: 1rem;
+
+       
+    }
+
+    .participant-buttons {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .participant-btn {
+        font-size: 1rem;
+        color: #ffffff;
+        background-color: red; /* Primary blue color */
+        border: none;
+        font-weight:normal;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .participant-btn:hover {
+            background-color: red; /* Darker blue on hover */
+        }
+    .page-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start; /* Push content higher */
+        padding-top: 2rem;
+        min-height: 80vh;
+    }
+
+    /* Stage header with light color and white shadow */
+    .stage-header {
+        font-size: 3rem;
+        color: black; /* Light color for readability */
+        text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.8); /* White shadow */
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    /* Match section styling with dark blue background */
+    .match-section {
+        text-align: center;
+        background-color: #ad0e19; /* Dark blue with slight transparency */
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2); /* Subtle white shadow for elevation */
+        width: 95%; /* Increased width for more space */
+        max-width: 700px;
+    }
+
+    /* Current match text with bright yellow and white shadow */
+    .current-match {
+        font-size: 2.5rem;
+        color: white; /* Bright yellow for visibility */
+        text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8); /* White shadow */
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+
+    /* Next match preview with light color and white shadow */
+    .next-match-preview {
+        font-size: 1.5rem;
+        color: white; /* Light coral/beige for contrast */
+        text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7); /* White shadow */
+        margin-top: 0.5rem;
+    }
+
+</style>
